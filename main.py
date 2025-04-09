@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import json
+import time
 
 file = open("./script.js")
 script = file.read() 
@@ -18,17 +19,20 @@ driver = webdriver.Chrome()
 
 personData = []
 
+total = len(sitesArray)
+
 for i in sitesArray:
-    driver.get(i)
-    driver.get_screenshot_as_file("file.png")
+    try:
+        driver.get(i)
 
-    WebDriverWait(driver, 10).until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
+        WebDriverWait(driver, 10).until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
+        time.sleep(5)
 
-    data = json.loads((driver.execute_script(script)))
-    for i in data:
-        personData.append(i)
+        data = (driver.execute_script(script))
+        print(data)
 
-print(personData)
+        personData += data
+    except:
+        print("error")
 
 outputFile.write(json.dumps(personData))
-driver.quit()
